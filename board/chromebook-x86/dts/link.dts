@@ -1,0 +1,45 @@
+/dts-v1/;
+
+/include/ "coreboot.dtsi"
+/include/ "chromeos-coreboot.dtsi"
+/include/ "flashmap-coreboot-8mb_1mb_rom.dtsi"
+/include/ "flashmap-coreboot-8mb-ec.dtsi"
+
+/ {
+	model = "Google Link";
+	compatible = "google,link", "intel,celeron-ivybridge";
+
+	config {
+		hwid = "X86 LINK TEST 6638";
+		hda_codec_beep = <1>;
+	};
+
+        gpio: gpio {};
+
+	chromeos-config {
+		ec-software-sync;
+		virtual-dev-switch;
+		oprom-matters;
+		vboot-flag-ec-in-rw {
+			compatible = "google,gpio-flag";
+			gpio = <&gpio 21 0>;
+		};
+
+	};
+
+	serial {
+		reg = <0x3f8 8>;
+		clock-frequency = <115200>;
+	};
+
+	lpc {
+		compatible = "intel,lpc";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		mkbp@200 {
+			compatible = "google,mkbp";
+			reg = <0x204 1 0x200 1 0x880 0x80 0x900 0xff>,
+				<0x800 4 0x804 0xfc>;
+		};
+	};
+};
