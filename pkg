@@ -1,0 +1,3 @@
+#!/bin/sh
+./tools/mkimage -A arm -O linux -T kernel -C none -a 0x47e00000 -e 0x47e00000 -n uboot -d u-boot-dtb.bin u-boot.img
+vbutil_kernel --pack newkernel --keyblock /usr/share/vboot/devkeys/kernel.keyblock --version 1 --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk --vmlinuz u-boot.img --arch arm
