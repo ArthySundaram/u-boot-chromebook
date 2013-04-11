@@ -73,57 +73,33 @@
 	"stdin=mkbp-keyb\0" \
 	"stdout=lcd\0" \
 	"stderr=lcd\0" \
+	"bootdelay=5\0" \
 	"dev_extras=daisy\0" \
 	"loadaddr=0x40007000\0" \
-	"rdaddr=0x4f000000\0" \
-	"kerneladdr=0x40007000\0" \
-	"ramdiskaddr=0x4f000000\0" \
-	"dtbaddr=0x4e800000\0" \
 	"console=tty\0" \
-	"mmcdev=1\0" \
-	"bootenv=uEnv.txt\0" \
-	"loadbootenv=ext2load mmc ${mmcdev}:2 ${loadaddr} ${bootenv}\0" \
+	"bootenv=u-boot.cfg\0" \
+	"loadbootenv=ext2load mmc 1:2 ${loadaddr} ${bootenv}\0" \
 	"importbootenv=echo Importing environment ...; " \
 		"env import -t $loadaddr $filesize\0" \
-        "loadbootscript=ext2load mmc ${mmcdev}:2 ${loadaddr} boot.scr\0" \
-	"loadbootenv_usb=ext2load usb ${usbdev}:2 ${loadaddr} ${bootenv}\0" \
-        "loadbootscript_usb=ext2load usb ${usbdev}:2 ${loadaddr} boot.scr\0" \
-        "bootscript=echo Running bootscript ...; " \
-                "source ${loadaddr}\0"
+        "loadbootscript=ext2load mmc 1:2 ${loadaddr} boot.scr\0" \
 
 /* Replace default CONFIG_BOOTCOMMAND */
 #ifdef CONFIG_BOOTCOMMAND
 #undef CONFIG_BOOTCOMMAND
 #endif
 #define CONFIG_BOOTCOMMAND \
-	"mmc dev ${mmcdev};              " \
-	"if mmc rescan ${mmcdev}; then " \
-		"echo SD/MMC found on device ${mmcdev};" \
+	"mmc dev 1; " \
+	"if mmc rescan; then " \
+		"echo SD/MMC found on device 1; " \
 		"if run loadbootenv; then " \
-			"echo Loaded environment from ${bootenv};" \
+			"echo Loaded environment from ${bootenv}; " \
 			"run importbootenv;" \
-		"fi;" \
-		"if test -n $uenvcmd; then " \
-			"echo Running uenvcmd ...;" \
-			"run uenvcmd;" \
-		"fi;" \
-		"if run loadbootscript; then " \
-			"run bootscript; " \
+		"fi; " \
+		"if test -n $bootscript; then " \
+			"echo Running bootscript...; " \
+			"run bootscript;" \
 		"fi; " \
 	"fi;" \
-	"usb start;" \
-		"echo Tring USB on device ${usbdev};" \
-		"if run loadbootenv_usb; then " \
-			"echo Loaded environment from ${bootenv};" \
-			"run importbootenv;" \
-		"fi;" \
-		"if test -n $uenvcmd; then " \
-			"echo Running uenvcmd ...;" \
-			"run uenvcmd;" \
-		"fi;" \
-		"if run loadbootscript_usb; then " \
-			"run bootscript; " \
-		"fi; "
 
 #define CONFIG_PRE_CONSOLE_BUFFER
 #define CONFIG_PRE_CON_BUF_SZ 0x100000
