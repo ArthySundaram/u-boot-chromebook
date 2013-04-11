@@ -1,0 +1,1 @@
+dd if=newkernel of=/dev/mmcblk1p1
