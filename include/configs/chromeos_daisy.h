@@ -81,7 +81,13 @@
 	"loadbootenv=ext2load mmc 1:2 ${loadaddr} ${bootenv}\0" \
 	"importbootenv=echo Importing environment ...; " \
 		"env import -t $loadaddr $filesize\0" \
-        "loadbootscript=ext2load mmc 1:2 ${loadaddr} boot.scr\0" \
+	"manual_import=mmc dev 1; if mmc rescan; then " \
+			"echo SD/MMC found on device 1; " \
+			"if run loadbootenv; then " \
+				"echo Loaded environment from ${bootenv}; " \
+				"run importbootenv; " \
+			"fi; " \
+		"fi;\0"
 
 /* Replace default CONFIG_BOOTCOMMAND */
 #ifdef CONFIG_BOOTCOMMAND
